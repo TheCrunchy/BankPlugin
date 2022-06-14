@@ -82,8 +82,14 @@ namespace BankPlugin
             {
                 return;
             }
+            if (EconUtils.GetBalance(Context.Player.IdentityId) < parsedAmount)
+            {
+                Context.Respond("You dont have that much money.");
+                return;
+            }
             if (BankPlugin.Core.BankService.DepositMoney(Context.Player.SteamUserId, parsedAmount))
             {
+          
                 EconUtils.TakeMoney(Context.Player.IdentityId, parsedAmount);
                 Context.Respond($"Deposited {parsedAmount.ToString():C}", "Bank");
             }
