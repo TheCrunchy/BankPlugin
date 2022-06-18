@@ -71,6 +71,39 @@ namespace BankPlugin.Commands
             }
         }
 
+
+        [Command("forcedeposit", "deposit every players money to bank")]
+        [Permission(MyPromoteLevel.Admin)]
+        public void BankForceDeposit()
+        {
+            int failCount = 0;
+            int successCount = 0;
+            long totalDeposited = 0;
+            foreach (var Identity in MySession.Static.Players.GetAllIdentities())
+            {
+                var steamId = MySession.Static.Players.TryGetSteamId(Identity.IdentityId);
+                if (steamId != null && steamId > 0l)
+                {
+                    var balance = EconUtils.GetBalance(Identity.IdentityId);
+                    if (BankPlugin.Core.BankService.DepositMoney(steamId, balance))
+                    {
+                      
+                        EconUtils.TakeMoney(Identity.IdentityId, balance);
+                        Core.HistoryService.AddToHistory(steamId, balance, DateTime.Now, Core.BankService.GetBalance(steamId));
+                        successCount += 1;
+                        totalDeposited += balance;
+                    }
+                    else
+                    {
+                        Core.Log.Info($"Bank Withdraw: {steamId}, {balance} failed");
+                        failCount += 1;
+                    }
+                }
+            }
+            Context.Respond($"Total Success:{successCount}, Total Fail:{failCount}, Total SC deposited {totalDeposited}");
+
+        }
+
         [Command("balance", "view bank")]
         [Permission(MyPromoteLevel.Admin)]
         public void BankBalance(string nameOrSteamId)
@@ -86,7 +119,7 @@ namespace BankPlugin.Commands
             Context.Respond($"Balance {balance.ToString():C}", "Bank");
         }
 
-        [Command("history", "withdraw from bank")]
+        [Command("history", "view history for player")]
         [Permission(MyPromoteLevel.Admin)]
         public void BankHistory(string nameOrSteamId)
         {
