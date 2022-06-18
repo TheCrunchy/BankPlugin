@@ -46,6 +46,7 @@ namespace BankPlugin
 
             SetupConfig();
             InitBankService(config.StoragePath, config.StorageType);
+            InitHistoryService(config.StoragePath, config.HistoryType);
             SetupFolders();
         }
         private void SetupConfig()

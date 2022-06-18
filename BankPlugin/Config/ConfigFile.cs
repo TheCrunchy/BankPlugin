@@ -10,5 +10,6 @@ namespace BankPlugin.Config
     {
         public string StoragePath = "default";
         public Storage StorageType = Storage.Json;
+        public HistoryType HistoryType = HistoryType.CSV;
     }
 }
