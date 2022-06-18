@@ -76,10 +76,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BankCommands.cs" />
+    <Compile Include="Commands\AdminCommands.cs" />
+    <Compile Include="Commands\BankCommands.cs" />
     <Compile Include="BankObjects\AccountAction.cs" />
     <Compile Include="BankObjects\AccountHistory.cs" />
     <Compile Include="BankObjects\Account.cs" />
+    <Compile Include="Config\HistoryType.cs" />
+    <Compile Include="HistoryServices\CSVHistoryService.cs" />
     <Compile Include="BankServices\JsonBankService.cs" />
     <Compile Include="BankServices\MySQLBankService.cs" />
     <Compile Include="BankServices\XMLBankService.cs" />
@@ -88,8 +91,9 @@
     <Compile Include="Core.cs" />
     <Compile Include="EconUtils.cs" />
     <Compile Include="FileUtils.cs" />
-    <Compile Include="IBankService.cs" />
+    <Compile Include="Interfaces\IBankService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Interfaces\IHistoryService.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

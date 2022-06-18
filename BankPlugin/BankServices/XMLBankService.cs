@@ -21,9 +21,6 @@ namespace BankPlugin.BankServices
             if (!File.Exists($"{_storagePath}//BankPlugin//Data//Xml//{steamid.ToString()}.Xml"))
             {
                 Core.utils.WriteToXmlFile<Account>($"{_storagePath}//BankPlugin//Data//Xml//{steamid.ToString()}.Xml", new Account() { Owner = steamid, Balance = balance });
-                StringBuilder newHistory = new StringBuilder();
-                newHistory.AppendLine("Time,ChangeAmount,BalanceAfterChange");
-                File.WriteAllText($"{_storagePath}//BankPlugin//Data//History//{steamid.ToString()}.csv", newHistory.ToString());
             }
             return new Account() { Owner = steamid, Balance = balance };
         }
@@ -91,7 +88,7 @@ namespace BankPlugin.BankServices
                 action.Time = DateTime.Parse(split[0]);
                 action.ChangeAmount = long.Parse(split[1]);
                 action.BalanceAfterChange = long.Parse(split[2]);
-                history.History.Add(action);
+                history.Actions.Add(action);
             }
             return history;
         }
@@ -107,6 +104,7 @@ namespace BankPlugin.BankServices
                 }
                 account.Balance -= amount;
                 Core.utils.WriteToXmlFile<Account>($"{_storagePath}//BankPlugin//Data//Xml//{steamid.ToString()}.Xml", account);
+
                 return true;
             }
             catch (Exception ex)
@@ -120,6 +118,7 @@ namespace BankPlugin.BankServices
         {
             if (File.Exists($"{_storagePath}//BankPlugin//Data//Xml//{steamid.ToString()}.Xml"))
             {
+
                 return Core.utils.ReadFromXmlFile<Account>($"{_storagePath}//BankPlugin//Data//Xml//{steamid.ToString()}.Xml");
             }
             else

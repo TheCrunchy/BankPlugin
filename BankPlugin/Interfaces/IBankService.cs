@@ -16,7 +16,6 @@ namespace BankPlugin
         long GetBalance(ulong steamId);
 
         List<Account> GetAllAccounts();
-        AccountHistory GetHistory(ulong steamid);
         Account GetAccount(ulong steamid);
     }
 }

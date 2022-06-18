@@ -22,9 +22,6 @@ namespace BankPlugin.BankServices
             if (!File.Exists($"{_storagePath}//BankPlugin//Data//Json//{steamid.ToString()}.json"))
             {
                 Core.utils.WriteToJsonFile<Account>($"{_storagePath}//BankPlugin//Data//Json//{steamid.ToString()}.json", new Account() { Owner = steamid, Balance = balance });
-                StringBuilder newHistory = new StringBuilder();
-                newHistory.AppendLine("Time,ChangeAmount,BalanceAfterChange");
-                File.WriteAllText($"{_storagePath}//BankPlugin//Data//History//{steamid.ToString()}.csv", newHistory.ToString());
             }
             return new Account() { Owner = steamid, Balance = balance };
         }
@@ -80,22 +77,7 @@ namespace BankPlugin.BankServices
             }
         }
 
-        public AccountHistory GetHistory(ulong steamid)
-        {
-            var account = GetAccount(steamid);
-            var temp = File.ReadLines($"{_storagePath}//BankPlugin//Data//History//{steamid.ToString()}.csv").Skip(1).ToArray();
-            var history = new AccountHistory();
-            foreach (var line in temp)
-            {
-                var split = line.Split(',');
-                AccountAction action = new AccountAction();
-                action.Time = DateTime.Parse(split[0]);
-                action.ChangeAmount = long.Parse(split[1]);
-                action.BalanceAfterChange = long.Parse(split[2]);
-                history.History.Add(action);
-            }
-            return history;
-        }
+
 
         public bool WithdrawMoney(ulong steamid, long amount)
         {

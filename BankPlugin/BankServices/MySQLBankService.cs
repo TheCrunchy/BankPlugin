@@ -49,9 +49,5 @@ namespace BankPlugin.BankServices
             throw new NotImplementedException();
         }
 
-        AccountHistory IBankService.GetHistory(ulong steamid)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -18,12 +18,14 @@ using Sandbox.Game.GameSystems;
 using BankPlugin.Config;
 using BankPlugin.BankServices;
 using NLog;
+using Sandbox.Game.World;
 
 namespace BankPlugin
 {
     public class Core : TorchPluginBase
     {
         public static IBankService BankService { get; set; }
+        public static IHistoryService HistoryService { get; set; }
 
         public static Logger Log = LogManager.GetLogger("BankPlugin");
 
@@ -96,14 +98,42 @@ namespace BankPlugin
                     break;
             }
         }
-
+        public void InitHistoryService(string path, HistoryType type)
+        {
+            switch (type)
+            {
+                case HistoryType.CSV:
+                    HistoryService = new CSVHistoryService(path);
+                    break;
+                case HistoryType.MySQL:
+                    throw new NotImplementedException();
+                    break;
+            }
+            HistoryService = new CSVHistoryService(path);
+        }
         private void SessionChanged(ITorchSession session, TorchSessionState newState)
         {
 
         }
- 
 
+        public static MyIdentity GetIdentityByNameOrId(string playerNameOrSteamId)
+        {
+            foreach (var identity in MySession.Static.Players.GetAllIdentities())
+            {
+                if (identity.DisplayName == playerNameOrSteamId)
+                    return identity;
+                if (ulong.TryParse(playerNameOrSteamId, out ulong steamId))
+                {
+                    ulong id = MySession.Static.Players.TryGetSteamId(identity.IdentityId);
+                    if (id == steamId)
+                        return identity;
+                    if (identity.IdentityId == (long)steamId)
+                        return identity;
+                }
 
+            }
+            return null;
+        }
     }
 }
 

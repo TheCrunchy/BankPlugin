@@ -8,6 +8,15 @@ namespace BankPlugin.BankObjects
 {
     public class AccountHistory
     {
-        public List<AccountAction> History = new List<AccountAction>();
+        public List<AccountAction> Actions = new List<AccountAction>();
+        public String GetOutputString()
+        {
+            StringBuilder builder = new StringBuilder();
+            foreach (var historyAction in Actions)
+            {
+                builder.Append($"{historyAction.Time},{historyAction.ChangeAmount},{historyAction.BalanceAfterChange}");
+            }
+            return builder.ToString();
+        }
     }
 }
