@@ -162,6 +162,7 @@ namespace BankPlugin.Commands
                 Core.HistoryService.AddToHistory(steamId, parsedAmount, DateTime.Now, Core.BankService.GetBalance(steamId));
                 Core.Log.Info($"Bank Admin Deposit: {steamId}, {parsedAmount} success");
             }
+            else
             {
                 Context.Respond($"Deposit failed.");
                 Core.Log.Info($"Bank Admin Deposit: {steamId}, {parsedAmount} failed");

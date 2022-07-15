@@ -43,9 +43,9 @@ namespace BankPlugin
                 sessionManager.SessionStateChanged += SessionChanged;
 
             SetupConfig();
+            SetupFolders();
             InitBankService(config.StoragePath, config.StorageType);
             InitHistoryService(config.StoragePath, config.HistoryType);
-            SetupFolders();
         }
 
         private void SetupConfig()
@@ -68,11 +68,12 @@ namespace BankPlugin
         {
             if (config.StoragePath == "default")
             {
-                Directory.CreateDirectory("\\BankPlugin");
-                Directory.CreateDirectory("\\BankPlugin\\Data");
-                Directory.CreateDirectory("\\BankPlugin\\Data\\Json");
-                Directory.CreateDirectory("\\BankPlugin\\Data\\XML");
-                Directory.CreateDirectory("\\BankPlugin\\Data\\History");
+                Directory.CreateDirectory($"{StoragePath}\\BankPlugin");
+                Directory.CreateDirectory($"{StoragePath}\\BankPlugin\\Data");
+                Directory.CreateDirectory($"{StoragePath}\\BankPlugin\\Data\\Json");
+                Directory.CreateDirectory($"{StoragePath}\\BankPlugin\\Data\\XML");
+                Directory.CreateDirectory($"{StoragePath}\\BankPlugin\\Data\\History");
+                config.StoragePath = StoragePath;
             }
             else
             {
