@@ -10,24 +10,21 @@ namespace BankPlugin.BankServices
 {
     public class CSVHistoryService : IHistoryService
     {
-       private string _storagePath { get; set; }
+        private string _storagePath { get; set; }
 
-        public CSVHistoryService(String storagePath)
-        {
-            _storagePath = storagePath;
-        }
+        public CSVHistoryService(string storagePath) => _storagePath = storagePath;
 
         public AccountHistory GetHistory(ulong steamid)
         {
-            if (!File.Exists($"{_storagePath}//BankPlugin//Data//History//{steamid.ToString()}.csv"))
+            if (!File.Exists($"{_storagePath}//BankPlugin//Data//History//{steamid}.csv"))
             {
                 StringBuilder newHistory = new StringBuilder();
                 newHistory.AppendLine("Time,ChangeAmount,BalanceAfterChange");
-                File.WriteAllText($"{_storagePath}//BankPlugin//Data//History//{steamid.ToString()}.csv", newHistory.ToString());
+                File.WriteAllText($"{_storagePath}//BankPlugin//Data//History//{steamid}.csv", newHistory.ToString());
                 return new AccountHistory();
             }
 
-            var temp = File.ReadLines($"{_storagePath}//BankPlugin//Data//History//{steamid.ToString()}.csv").Skip(1).ToArray();
+            var temp = File.ReadLines($"{_storagePath}//BankPlugin//Data//History//{steamid}.csv").Skip(1).ToArray();
 
             var history = new AccountHistory();
             foreach (var line in temp)
@@ -60,7 +57,7 @@ namespace BankPlugin.BankServices
                 builder.Append($"{historyAction.Time},{historyAction.ChangeAmount},{historyAction.BalanceAfterChange}");
             }
 
-            File.WriteAllText($"{_storagePath}//BankPlugin//Data//History//{steamid.ToString()}.csv", builder.ToString());
+            File.WriteAllText($"{_storagePath}//BankPlugin//Data//History//{steamid}.csv", builder.ToString());
         }
     }
 }

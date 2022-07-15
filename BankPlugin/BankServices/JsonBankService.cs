@@ -12,16 +12,13 @@ namespace BankPlugin.BankServices
     {
         private string _storagePath { get; set; }
 
-        public JsonBankService(String storagePath)
-        {
-            _storagePath = storagePath;
-        }
+        public JsonBankService(string storagePath) => _storagePath = storagePath;
 
         public Account CreateAccount(ulong steamid, long balance = 0)
         {
-            if (!File.Exists($"{_storagePath}//BankPlugin//Data//Json//{steamid.ToString()}.json"))
+            if (!File.Exists($"{_storagePath}//BankPlugin//Data//Json//{steamid}.json"))
             {
-                Core.utils.WriteToJsonFile<Account>($"{_storagePath}//BankPlugin//Data//Json//{steamid.ToString()}.json", new Account() { Owner = steamid, Balance = balance });
+                Core.utils.WriteToJsonFile($"{_storagePath}//BankPlugin//Data//Json//{steamid}.json", new Account() { Owner = steamid, Balance = balance });
             }
             return new Account() { Owner = steamid, Balance = balance };
         }
@@ -32,7 +29,7 @@ namespace BankPlugin.BankServices
             {
                 var account = GetAccount(steamid);
                 account.Balance += amount;
-                Core.utils.WriteToJsonFile<Account>($"{_storagePath}//BankPlugin//Data//Json//{steamid.ToString()}.json", account);
+                Core.utils.WriteToJsonFile($"{_storagePath}//BankPlugin//Data//Json//{steamid}.json", account);
                 return true;
             }
             catch (Exception ex)
@@ -46,7 +43,7 @@ namespace BankPlugin.BankServices
         {
             List<Account> accounts = new List<Account>();
             StringBuilder errors = new StringBuilder();
-            foreach (String s in Directory.GetFiles($"{_storagePath}//BankPlugin//Data//Json"))
+            foreach (string s in Directory.GetFiles($"{_storagePath}//BankPlugin//Data//Json"))
             {
                 try
                 {
@@ -55,7 +52,7 @@ namespace BankPlugin.BankServices
                 }
                 catch (Exception ex)
                 {
-                    errors.Append($"Error Parsing {s} {ex.ToString()}");
+                    errors.Append($"Error Parsing {s} {ex}");
                     continue;
                 }
             }
@@ -77,8 +74,6 @@ namespace BankPlugin.BankServices
             }
         }
 
-
-
         public bool WithdrawMoney(ulong steamid, long amount)
         {
             try
@@ -89,7 +84,7 @@ namespace BankPlugin.BankServices
                     return false;
                 }
                 account.Balance -= amount;
-                Core.utils.WriteToJsonFile<Account>($"{_storagePath}//BankPlugin//Data//Json//{steamid.ToString()}.json", account);
+                Core.utils.WriteToJsonFile($"{_storagePath}//BankPlugin//Data//Json//{steamid}.json", account);
                 return true;
             }
             catch (Exception ex)
@@ -101,9 +96,9 @@ namespace BankPlugin.BankServices
 
         public Account GetAccount(ulong steamid)
         {
-            if (File.Exists($"{_storagePath}//BankPlugin//Data//Json//{steamid.ToString()}.json"))
+            if (File.Exists($"{_storagePath}//BankPlugin//Data//Json//{steamid}.json"))
             {
-                return Core.utils.ReadFromJsonFile<Account>($"{_storagePath}//BankPlugin//Data//Json//{steamid.ToString()}.json");
+                return Core.utils.ReadFromJsonFile<Account>($"{_storagePath}//BankPlugin//Data//Json//{steamid}.json");
             }
             else
             {
