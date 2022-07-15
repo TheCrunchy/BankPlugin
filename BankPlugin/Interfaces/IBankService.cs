@@ -9,8 +9,8 @@ namespace BankPlugin
 {
     public interface IBankService
     {
-        Boolean DepositMoney(ulong steamid, long amount);
-        Boolean WithdrawMoney(ulong steamid, long amount);
+        bool DepositMoney(ulong steamid, long amount);
+        bool WithdrawMoney(ulong steamid, long amount);
 
         Account CreateAccount(ulong steamid, long balance);
         long GetBalance(ulong steamId);

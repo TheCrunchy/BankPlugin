@@ -2,5 +2,5 @@
 <PluginManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Name>BankPlugin</Name>
   <Guid>8684312a-e946-4034-a021-70e4536a84c7</Guid>
-  <Version>v1.4</Version>
+  <Version>v1.6</Version>
 </PluginManifest>

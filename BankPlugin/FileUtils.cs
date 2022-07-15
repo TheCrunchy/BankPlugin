@@ -1,6 +1,5 @@
 ﻿namespace BankPlugin
 {
-
     using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
@@ -13,7 +12,6 @@
 
     public class FileUtils
     {
-
         public void WriteToJsonFile<T>(string filePath, T objectToWrite, bool append = false) where T : new()
         {
             TextWriter writer = null;

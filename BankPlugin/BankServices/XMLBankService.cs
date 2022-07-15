@@ -12,15 +12,13 @@ namespace BankPlugin.BankServices
     {
         private string _storagePath { get; set; }
 
-        public XMLBankService(String storagePath)
-        {
-            _storagePath = storagePath;
-        }
+        public XMLBankService(string storagePath) => _storagePath = storagePath;
+
         public Account CreateAccount(ulong steamid, long balance = 0)
         {
-            if (!File.Exists($"{_storagePath}//BankPlugin//Data//Xml//{steamid.ToString()}.Xml"))
+            if (!File.Exists($"{_storagePath}//BankPlugin//Data//Xml//{steamid}.Xml"))
             {
-                Core.utils.WriteToXmlFile<Account>($"{_storagePath}//BankPlugin//Data//Xml//{steamid.ToString()}.Xml", new Account() { Owner = steamid, Balance = balance });
+                Core.utils.WriteToXmlFile($"{_storagePath}//BankPlugin//Data//Xml//{steamid}.Xml", new Account() { Owner = steamid, Balance = balance });
             }
             return new Account() { Owner = steamid, Balance = balance };
         }
@@ -31,7 +29,7 @@ namespace BankPlugin.BankServices
             {
                 var account = GetAccount(steamid);
                 account.Balance += amount;
-                Core.utils.WriteToXmlFile<Account>($"{_storagePath}//BankPlugin//Data//Xml//{steamid.ToString()}.Xml", account);
+                Core.utils.WriteToXmlFile($"{_storagePath}//BankPlugin//Data//Xml//{steamid}.Xml", account);
                 return true;
             }
             catch (Exception ex)
@@ -45,7 +43,7 @@ namespace BankPlugin.BankServices
         {
             List<Account> accounts = new List<Account>();
             StringBuilder errors = new StringBuilder();
-            foreach (String s in Directory.GetFiles($"{_storagePath}//BankPlugin//Data//Xml"))
+            foreach (string s in Directory.GetFiles($"{_storagePath}//BankPlugin//Data//Xml"))
             {
                 try
                 {
@@ -54,7 +52,7 @@ namespace BankPlugin.BankServices
                 }
                 catch (Exception ex)
                 {
-                    errors.Append($"Error Parsing {s} {ex.ToString()}");
+                    errors.Append($"Error Parsing {s} {ex}");
                     continue;
                 }
             }
@@ -79,7 +77,7 @@ namespace BankPlugin.BankServices
         public AccountHistory GetHistory(ulong steamid)
         {
             var account = GetAccount(steamid);
-            var temp = File.ReadLines($"{_storagePath}//BankPlugin//Data//History//{steamid.ToString()}.csv").Skip(1).ToArray();
+            var temp = File.ReadLines($"{_storagePath}//BankPlugin//Data//History//{steamid}.csv").Skip(1).ToArray();
             var history = new AccountHistory();
             foreach (var line in temp)
             {
@@ -103,7 +101,7 @@ namespace BankPlugin.BankServices
                     return false;
                 }
                 account.Balance -= amount;
-                Core.utils.WriteToXmlFile<Account>($"{_storagePath}//BankPlugin//Data//Xml//{steamid.ToString()}.Xml", account);
+                Core.utils.WriteToXmlFile($"{_storagePath}//BankPlugin//Data//Xml//{steamid}.Xml", account);
 
                 return true;
             }
@@ -116,10 +114,10 @@ namespace BankPlugin.BankServices
 
         public Account GetAccount(ulong steamid)
         {
-            if (File.Exists($"{_storagePath}//BankPlugin//Data//Xml//{steamid.ToString()}.Xml"))
+            if (File.Exists($"{_storagePath}//BankPlugin//Data//Xml//{steamid}.Xml"))
             {
 
-                return Core.utils.ReadFromXmlFile<Account>($"{_storagePath}//BankPlugin//Data//Xml//{steamid.ToString()}.Xml");
+                return Core.utils.ReadFromXmlFile<Account>($"{_storagePath}//BankPlugin//Data//Xml//{steamid}.Xml");
             }
             else
             {

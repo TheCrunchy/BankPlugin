@@ -57,7 +57,7 @@ namespace BankPlugin.Commands
                 return;
             }
             var steamId = MySession.Static.Players.TryGetSteamId(playerIdentity.IdentityId);
-            if (BankPlugin.Core.BankService.WithdrawMoney(steamId, parsedAmount))
+            if (Core.BankService.WithdrawMoney(steamId, parsedAmount))
             {
                 Context.Respond($"Withdrew {parsedAmount.ToString():C}", "Bank Admin");
 
@@ -66,11 +66,10 @@ namespace BankPlugin.Commands
             }
             else
             {
-                Context.Respond($"Withdraw failed. Bank Balance: {BankPlugin.Core.BankService.GetBalance(steamId).ToString():C}", "Bank");
+                Context.Respond($"Withdraw failed. Bank Balance: {Core.BankService.GetBalance(steamId).ToString():C}", "Bank");
                 Core.Log.Info($"Bank Withdraw: {steamId}, {parsedAmount} failed");
             }
         }
-
 
         [Command("forcedeposit", "deposit every players money to bank")]
         [Permission(MyPromoteLevel.Admin)]
@@ -82,12 +81,11 @@ namespace BankPlugin.Commands
             foreach (var Identity in MySession.Static.Players.GetAllIdentities())
             {
                 var steamId = MySession.Static.Players.TryGetSteamId(Identity.IdentityId);
-                if (steamId != null && steamId > 0l)
+                if (steamId > 0L)
                 {
                     var balance = EconUtils.GetBalance(Identity.IdentityId);
-                    if (BankPlugin.Core.BankService.DepositMoney(steamId, balance))
+                    if (Core.BankService.DepositMoney(steamId, balance))
                     {
-                      
                         EconUtils.TakeMoney(Identity.IdentityId, balance);
                         Core.HistoryService.AddToHistory(steamId, balance, DateTime.Now, Core.BankService.GetBalance(steamId));
                         successCount += 1;
@@ -101,7 +99,6 @@ namespace BankPlugin.Commands
                 }
             }
             Context.Respond($"Total Success:{successCount}, Total Fail:{failCount}, Total SC deposited {totalDeposited}");
-
         }
 
         [Command("balance", "view bank")]
@@ -115,7 +112,7 @@ namespace BankPlugin.Commands
                 return;
             }
             var steamId = MySession.Static.Players.TryGetSteamId(playerIdentity.IdentityId);
-            var balance = BankPlugin.Core.BankService.GetBalance(steamId);
+            var balance = Core.BankService.GetBalance(steamId);
             Context.Respond($"Balance {balance.ToString():C}", "Bank");
         }
 
@@ -130,7 +127,7 @@ namespace BankPlugin.Commands
                 return;
             }
             var steamId = MySession.Static.Players.TryGetSteamId(playerIdentity.IdentityId);
-            var history = BankPlugin.Core.HistoryService.GetHistory(steamId);
+            var history = Core.HistoryService.GetHistory(steamId);
             DialogMessage m = new DialogMessage("Bank History", steamId.ToString(), history.GetOutputString());
             if (Context.Player != null)
             {
@@ -159,15 +156,16 @@ namespace BankPlugin.Commands
                 return;
             }
             var steamId = MySession.Static.Players.TryGetSteamId(playerIdentity.IdentityId);
-            if (BankPlugin.Core.BankService.DepositMoney(steamId, parsedAmount))
+            if (Core.BankService.DepositMoney(steamId, parsedAmount))
             {
                 Context.Respond($"Deposited {parsedAmount.ToString():C}", "Bank Admin");
                 Core.HistoryService.AddToHistory(steamId, parsedAmount, DateTime.Now, Core.BankService.GetBalance(steamId));
-                Core.Log.Info($"Bank Admin Deposit: {steamId.ToString()}, {parsedAmount} success");
+                Core.Log.Info($"Bank Admin Deposit: {steamId}, {parsedAmount} success");
             }
+            else
             {
                 Context.Respond($"Deposit failed.");
-                Core.Log.Info($"Bank Admin Deposit: {steamId.ToString()}, {parsedAmount} failed");
+                Core.Log.Info($"Bank Admin Deposit: {steamId}, {parsedAmount} failed");
             }
         }
     }

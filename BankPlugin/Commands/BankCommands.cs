@@ -49,18 +49,18 @@ namespace BankPlugin
                 Context.Respond("Withdraw amount must be positive.");
                 return;
             }
-  
-            if (BankPlugin.Core.BankService.WithdrawMoney(Context.Player.SteamUserId, parsedAmount))
+
+            if (Core.BankService.WithdrawMoney(Context.Player.SteamUserId, parsedAmount))
             {
                 EconUtils.AddMoney(Context.Player.IdentityId, parsedAmount);
-                Context.Respond($"Withdrew {parsedAmount.ToString():C}", "Bank");
-         
+                Context.Respond($"Withdrew {parsedAmount.ToString():C} from your Bank", "Bank");
+
                 Core.HistoryService.AddToHistory(Context.Player.SteamUserId, parsedAmount * -1, DateTime.Now, Core.BankService.GetBalance(Context.Player.SteamUserId));
                 Core.Log.Info($"Bank Withdraw: {Context.Player.SteamUserId}, {parsedAmount} success");
             }
             else
             {
-                Context.Respond($"Withdraw failed. Bank Balance: {BankPlugin.Core.BankService.GetBalance(Context.Player.SteamUserId).ToString():C}", "Bank");
+                Context.Respond($"Withdraw failed. Bank Balance: {Core.BankService.GetBalance(Context.Player.SteamUserId).ToString():C}", "Bank");
                 Core.Log.Info($"Bank Withdraw: {Context.Player.SteamUserId}, {parsedAmount} failed");
             }
         }
@@ -69,7 +69,7 @@ namespace BankPlugin
         [Permission(MyPromoteLevel.None)]
         public void BankBalance()
         {
-            var balance = BankPlugin.Core.BankService.GetBalance(Context.Player.SteamUserId);
+            var balance = Core.BankService.GetBalance(Context.Player.SteamUserId);
             Context.Respond($"Balance {balance.ToString():C}", "Bank");
         }
 
@@ -77,7 +77,7 @@ namespace BankPlugin
         [Permission(MyPromoteLevel.None)]
         public void BankHistory()
         {
-            var history = BankPlugin.Core.HistoryService.GetHistory(Context.Player.SteamUserId);
+            var history = Core.HistoryService.GetHistory(Context.Player.SteamUserId);
             DialogMessage m = new DialogMessage("Bank History", Context.Player.SteamUserId.ToString(), history.GetOutputString());
             ModCommunication.SendMessageTo(m, Context.Player.SteamUserId);
         }
@@ -97,13 +97,14 @@ namespace BankPlugin
                 Context.Respond("You dont have that much money.");
                 return;
             }
-            if (BankPlugin.Core.BankService.DepositMoney(Context.Player.SteamUserId, parsedAmount))
+            if (Core.BankService.DepositMoney(Context.Player.SteamUserId, parsedAmount))
             {
                 EconUtils.TakeMoney(Context.Player.IdentityId, parsedAmount);
-                Context.Respond($"Deposited {parsedAmount.ToString():C}", "Bank");
+                Context.Respond($"Deposited {parsedAmount.ToString():C} to your Bank", "Bank");
                 Core.HistoryService.AddToHistory(Context.Player.SteamUserId, parsedAmount, DateTime.Now, Core.BankService.GetBalance(Context.Player.SteamUserId));
                 Core.Log.Info($"Bank Deposit: {Context.Player.SteamUserId}, {parsedAmount} success");
             }
+            else
             {
                 Context.Respond($"Deposit failed.");
                 Core.Log.Info($"Bank Deposit: {Context.Player.SteamUserId}, {parsedAmount} failed");

@@ -40,15 +40,14 @@ namespace BankPlugin
             var sessionManager = Torch.Managers.GetManager<TorchSessionManager>();
 
             if (sessionManager != null)
-            {
                 sessionManager.SessionStateChanged += SessionChanged;
-            }
 
             SetupConfig();
+            SetupFolders();
             InitBankService(config.StoragePath, config.StorageType);
             InitHistoryService(config.StoragePath, config.HistoryType);
-            SetupFolders();
         }
+
         private void SetupConfig()
         {
             FileUtils utils = new FileUtils();
@@ -56,34 +55,34 @@ namespace BankPlugin
             if (File.Exists(StoragePath + "\\BankConfig.xml"))
             {
                 config = utils.ReadFromXmlFile<ConfigFile>(StoragePath + "\\BankConfig.xml");
-                utils.WriteToXmlFile<ConfigFile>(StoragePath + "\\BankConfig.xml", config, false);
+                utils.WriteToXmlFile(StoragePath + "\\BankConfig.xml", config, false);
             }
             else
             {
                 config = new ConfigFile();
-                utils.WriteToXmlFile<ConfigFile>(StoragePath + "\\BankConfig.xml", config, false);
+                utils.WriteToXmlFile(StoragePath + "\\BankConfig.xml", config, false);
             }
-
         }
 
         private void SetupFolders()
         {
             if (config.StoragePath == "default")
             {
-                Directory.CreateDirectory("//BankPlugin");
-                Directory.CreateDirectory("//BankPlugin//Data");
-                Directory.CreateDirectory("//BankPlugin//Data//Json");
-                Directory.CreateDirectory("//BankPlugin//Data//XML");
-                Directory.CreateDirectory("//BankPlugin//Data//History");
+                Directory.CreateDirectory($"{StoragePath}\\BankPlugin");
+                Directory.CreateDirectory($"{StoragePath}\\BankPlugin\\Data");
+                Directory.CreateDirectory($"{StoragePath}\\BankPlugin\\Data\\Json");
+                Directory.CreateDirectory($"{StoragePath}\\BankPlugin\\Data\\XML");
+                Directory.CreateDirectory($"{StoragePath}\\BankPlugin\\Data\\History");
+                config.StoragePath = StoragePath;
             }
             else
             {
-                config.StoragePath = config.StoragePath.Replace("//BankPlugin", "");
-                Directory.CreateDirectory($"{config.StoragePath}//BankPlugin");
-                Directory.CreateDirectory($"{config.StoragePath}//BankPlugin//Data");
-                Directory.CreateDirectory($"{config.StoragePath}//BankPlugin//Data//Json");
-                Directory.CreateDirectory($"{config.StoragePath}//BankPlugin//Data//XML");
-                Directory.CreateDirectory($"{config.StoragePath}//BankPlugin//Data//History");
+                config.StoragePath = config.StoragePath.Replace("\\BankPlugin", "");
+                Directory.CreateDirectory($"{config.StoragePath}\\BankPlugin");
+                Directory.CreateDirectory($"{config.StoragePath}\\BankPlugin\\Data");
+                Directory.CreateDirectory($"{config.StoragePath}\\BankPlugin\\Data\\Json");
+                Directory.CreateDirectory($"{config.StoragePath}\\BankPlugin\\Data\\XML");
+                Directory.CreateDirectory($"{config.StoragePath}\\BankPlugin\\Data\\History");
             }
         }
 
@@ -99,6 +98,7 @@ namespace BankPlugin
                     break;
             }
         }
+
         public void InitHistoryService(string path, HistoryType type)
         {
             switch (type)
@@ -108,10 +108,11 @@ namespace BankPlugin
                     break;
                 case HistoryType.MySQL:
                     throw new NotImplementedException();
-                    break;
+                    //break;
             }
             HistoryService = new CSVHistoryService(path);
         }
+
         private void SessionChanged(ITorchSession session, TorchSessionState newState)
         {
 
